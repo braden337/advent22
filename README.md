@@ -1,4 +1,4 @@
-# 2022 Advent of Code in [Raku](https://raku.org)
+# [Advent of Code](https://adventofcode.com/2022) 2022 in [Raku](https://raku.org)
 
 Install [rakudo-star](https://rakudo.org/star)
 
