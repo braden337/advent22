@@ -1,52 +1,38 @@
-my %second_spaces = ('0,0' => 1);
-my %tail_spaces = ('0,0' => 1);
-my @x = 0 xx 10;
-my @y = 0 xx 10;
+my $MAX_LENGTH = 10;
 
-sub distance($head, $tail) {
-    $head - $tail;
+my @x = 0 xx $MAX_LENGTH;
+my @y = 0 xx $MAX_LENGTH;
+my @spaces = {'0,0' => 1} xx $MAX_LENGTH - 1;
+
+sub distance($points, $head) {
+    $points[$head] - $points[$head + 1];
 }
 
 sub adjacent($head) {
-    my $tail = $head + 1;
-    abs(distance(@x[$head], @x[$tail])) < 2 && abs(distance(@y[$head], @y[$tail])) < 2;
+    distance($@x, $head).abs < 2 && distance($@y, $head).abs < 2;
+}
+
+sub move($head, $direction) {
+    ('LR' ~~ /$direction/ ?? $@x !! $@y)[$head] += 'UR' ~~ /$direction/ ?? 1 !! -1;
 }
 
 sub follow($head) {
+    my $x = distance($@x, $head);
+    my $y = distance($@y, $head);
     my $tail = $head + 1;
-    my $x = distance(@x[$head], @x[$tail]);
-    my $y = distance(@y[$head], @y[$tail]);
 
     @x[$tail] += $x.sign;
     @y[$tail] += $y.sign;
 
-    my $coordinate = "{@x[$tail]},{@y[$tail]}";
+    my $coordinate = join ',', @x[$tail], @y[$tail];
 
-    if $tail == 1 {
-        %second_spaces{$coordinate} += 1;
-    }
-    
-    if $tail == @x - 1 {
-        %tail_spaces{$coordinate} += 1;
-    }
-}
-
-sub move($head, $direction) {
-    if ($direction eq 'U') {
-        @y[$head] += 1;
-    } elsif ($direction eq 'D') {
-        @y[$head] -= 1;
-    } elsif ($direction eq 'L') {
-        @x[$head] -= 1;
-    } elsif ($direction eq 'R') {
-        @x[$head] += 1;
-    }
+    @spaces[$tail - 1]{$coordinate} += 1;
 }
 
 for 'input/day_9.txt'.IO.lines -> $line {
     my ($direction, $magnitude) = $line.words;
 
-    for 1..+$magnitude {
+    for $direction xx $magnitude {
         my $n = 0;
         move($n, $direction);
 
@@ -57,5 +43,5 @@ for 'input/day_9.txt'.IO.lines -> $line {
     }
 }
 
-say %second_spaces.keys.elems;
-say %tail_spaces.keys.elems;
+say @spaces.head.keys.elems;
+say @spaces.tail.keys.elems;
