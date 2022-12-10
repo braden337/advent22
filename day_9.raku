@@ -2,7 +2,7 @@ my $MAX_LENGTH = 10;
 
 my @x = 0 xx $MAX_LENGTH;
 my @y = 0 xx $MAX_LENGTH;
-my @spaces = {'0,0' => 1} xx $MAX_LENGTH - 1;
+my @tails = <0,0>.SetHash xx $MAX_LENGTH - 1;
 
 sub distance($points, $head) {
     $points[$head] - $points[$head + 1];
@@ -26,7 +26,7 @@ sub follow($head) {
 
     my $coordinate = join ',', @x[$tail], @y[$tail];
 
-    @spaces[$tail - 1]{$coordinate} += 1;
+    @tails[$head].set($coordinate) unless @tails[$head]<$coordinate>;
 }
 
 for 'input/day_9.txt'.IO.lines -> $line {
@@ -43,5 +43,5 @@ for 'input/day_9.txt'.IO.lines -> $line {
     }
 }
 
-say @spaces.head.keys.elems;
-say @spaces.tail.keys.elems;
+say @tails.head.keys.elems;
+say @tails.tail.keys.elems;
